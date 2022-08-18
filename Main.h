@@ -1,7 +1,7 @@
 // Main.h
 
-#ifndef MY_MAIN         // used MY_MAIN for this include guard rather than MAIN just in case some compilers or environments #define MAIN already
-#define MY_MAIN
+#ifndef MAIN_H         // used MY_MAIN for this include guard rather than MAIN just in case some compilers or environments #define MAIN already
+#define MAIN_H
 
 #include<opencv2/core/core.hpp>
 #include<opencv2/highgui/highgui.hpp>
@@ -9,10 +9,13 @@
 
 #include "DetectPlates.h"
 #include "PossiblePlate.h"
+#include "PossibleChar.h"
 #include "DetectChars.h"
+#include "Preprocess.h"
+#include "Recognise.h"
 
 #include<iostream>
-#include<conio.h>           // may have to modify this line if not using Windows
+#include<stdio.h>
 
 //#define SHOW_STEPS            // un-comment or comment this line to show steps or not
 

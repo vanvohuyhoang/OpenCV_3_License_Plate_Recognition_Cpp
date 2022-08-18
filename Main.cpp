@@ -1,25 +1,23 @@
 // Main.cpp
 
 #include "Main.h"
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void) {
+  LPR_Recognise RC;
+  String Plate_result;
+  cv::Mat imgOriginalScene;           // input image
 
-    bool blnKNNTrainingSuccessful = loadKNNDataAndTrainKNN();           // attempt KNN training
+  imgOriginalScene = cv::imread("image1.png");         // open image
+  int down_width = 720;
+  int down_height = 480;
+  cv::Mat resized_down;
+  //resize down
+  cv::resize(imgOriginalScene, imgOriginalScene, cv::Size(down_width, down_height), cv::INTER_LINEAR);
 
-    if (blnKNNTrainingSuccessful == false) {                            // if KNN training was not successful
-                                                                        // show error message
-        std::cout << std::endl << std::endl << "error: error: KNN traning was not successful" << std::endl << std::endl;
-        return(0);                                                      // and exit program
-    }
-
-    cv::Mat imgOriginalScene;           // input image
-
-    imgOriginalScene = cv::imread("image1.png");         // open image
 
     if (imgOriginalScene.empty()) {                             // if unable to open image
         std::cout << "error: image not read from file\n\n";     // show error message on command line
-        _getch();                                               // may have to modify this line if not using Windows
+	    getchar();
         return(0);                                              // and exit program
     }
 
@@ -44,21 +42,8 @@ int main(void) {
         cv::imshow("imgPlate", licPlate.imgPlate);            // show crop of plate and threshold of plate
         cv::imshow("imgThresh", licPlate.imgThresh);
 
-        if (licPlate.strChars.length() == 0) {                                                      // if no chars were found in the plate
-            std::cout << std::endl << "no characters were detected" << std::endl << std::endl;      // show message
-            return(0);                                                                              // and exit program
-        }
-
-        drawRedRectangleAroundPlate(imgOriginalScene, licPlate);                // draw red rectangle around plate
-
-        std::cout << std::endl << "license plate read from image = " << licPlate.strChars << std::endl;     // write license plate text to std out
-        std::cout << std::endl << "-----------------------------------------" << std::endl;
-
-        writeLicensePlateCharsOnImage(imgOriginalScene, licPlate);              // write license plate text on the image
-
-        cv::imshow("imgOriginalScene", imgOriginalScene);                       // re-show scene image
-
-        cv::imwrite("imgOriginalScene.png", imgOriginalScene);                  // write image out to file
+        Plate_result = RC.CharacterDetection(licPlate.imgPlate);
+        std::cout<<Plate_result<<std::endl;
     }
 
     cv::waitKey(0);                 // hold windows open until user presses a key
@@ -82,7 +67,7 @@ void writeLicensePlateCharsOnImage(cv::Mat &imgOriginalScene, PossiblePlate &lic
     cv::Point ptCenterOfTextArea;                   // this will be the center of the area the text will be written to
     cv::Point ptLowerLeftTextOrigin;                // this will be the bottom left of the area that the text will be written to
 
-    int intFontFace = CV_FONT_HERSHEY_SIMPLEX;                              // choose a plain jane font
+    int intFontFace = cv::FONT_HERSHEY_SIMPLEX;                              // choose a plain jane font
     double dblFontScale = (double)licPlate.imgPlate.rows / 30.0;            // base font scale on height of plate area
     int intFontThickness = (int)std::round(dblFontScale * 1.5);             // base font thickness on font scale
     int intBaseline = 0;
